@@ -36,7 +36,12 @@ const burgerBuilder = (state = initialState, action) => {
         case actionTypes.SET_INGREDIENTS:
             return {
                 ...state,
-                ingredients: action.ingredients,
+                ingredients: {
+                    salad: action.ingredients.salas,
+                    bacon: action.ingredients.bacon,
+                    meat: action.ingredients.meat,
+                    cheese: action.ingredients.cheese
+                },
                 error: false
             };
         case actionTypes.FETCH_INGREDIENTS_FAILED:
