@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
@@ -74,16 +75,16 @@ class Auth extends Component {
     }
 
     inputChangedHandler = (event, controlName) => {
-      const updatedControls = {
-          ...this.state.controls,
-          [controlName] : {
-              ...this.state.controls[controlName],
-              value: event.target.value,
-              valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
-              touched: true
-          }
-      } ;
-      this.setState({controls: updatedControls})
+        const updatedControls = {
+            ...this.state.controls,
+            [controlName]: {
+                ...this.state.controls[controlName],
+                value: event.target.value,
+                valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+                touched: true
+            }
+        };
+        this.setState({controls: updatedControls})
     };
 
     submitHandler = (event) => {
@@ -93,11 +94,11 @@ class Auth extends Component {
 
     switchAuthModeHandler = () => {
         this.setState(prevState => {
-            return{isSignup: !prevState.isSignup};
+            return {isSignup: !prevState.isSignup};
         })
     }
 
-    render () {
+    render() {
         const formElementsArray = [];
         for (let key in this.state.controls) {
             formElementsArray.push({
@@ -132,12 +133,18 @@ class Auth extends Component {
             );
         }
 
+        let authRedirect = null;
+        if (this.props.isAuthenticated) {
+            authRedirect = <Redirect to="/"/>
+        }
+
         return (
             <div className={classes.Auth}>
+                {authRedirect}
                 {errorMessage}
                 <form onSubmit={this.submitHandler}>
                     {form}
-                    <Button btnType="Success" >SUBMIT</Button>
+                    <Button btnType="Success">SUBMIT</Button>
                 </form>
                 <Button
                     clicked={this.switchAuthModeHandler}
@@ -150,7 +157,8 @@ class Auth extends Component {
 const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
-        error: state.auth.error
+        error: state.auth.error,
+        isAuthenticated: state.auth.token !== null
     }
 };
 
